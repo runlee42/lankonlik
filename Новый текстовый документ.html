@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LankonLik - Təbii Məhsullar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e5e7eb; 
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .mobile-container {
+            width: 100%;
+            max-width: 450px; 
+            background-color: #ffffff; 
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #be123c;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        #cart-modal {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            z-index: 1000;
+            display: none;
+            background-color: rgba(2, 44, 34, 0.6);
+            backdrop-filter: blur(6px);
+        }
+
+        #cart-modal.active {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        #cart-content {
+            background-color: white;
+            width: 100%;
+            max-height: 85vh;
+            border-top-left-radius: 2rem;
+            border-top-right-radius: 2rem;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .no-scroll {
+            overflow: hidden !important;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0px;
+        }
+    </style>
+</head>
+<body class="text-gray-900">
+
+    <div class="mobile-container">
+        <!-- Naviqasiya -->
+        <nav class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100 px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- Loqo/İkon -->
+                <div class="text-emerald-800 text-2xl">
+                    <i class="fas fa-mountain"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-tight text-emerald-950 leading-none">Lankon<span class="text-amber-600">Lik</span></h1>
+                    <p class="text-[9px] uppercase tracking-[0.1em] text-gray-500 font-bold mt-1">Talış dağlarının havası</p>
+                </div>
+            </div>
+            
+            <button onclick="toggleCart()" class="relative p-2 text-emerald-950 hover:bg-emerald-50 rounded-full transition">
+                <i class="fas fa-shopping-basket text-xl"></i>
+                <span id="cart-count" class="cart-badge hidden">0</span>
+            </button>
+        </nav>
+
+        <!-- Əsas məzmun -->
+        <main class="flex-1 overflow-x-hidden">
+            <header class="relative overflow-hidden bg-emerald-950 text-white py-14 px-6 mb-8 text-center">
+                <div class="absolute inset-0 opacity-40">
+                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover scale-110" alt="Təbiət">
+                </div>
+                <div class="relative">
+                    <span class="inline-block bg-amber-500 text-emerald-950 text-[10px] font-black px-3 py-1 rounded-full mb-3 uppercase tracking-widest">Kənd məhsulları</span>
+                    <h2 class="text-3xl font-extrabold mb-4 leading-tight">Hər məhsulda sağlamlıq və dad</h2>
+                    <p class="text-emerald-50/90 text-sm leading-relaxed font-medium">Yüksək dağlıq şəraitdə, təmiz havada yetişdirilən təbii məhsullar.</p>
+                </div>
+            </header>
+
+            <div class="px-5 pb-10">
+                <div class="mb-6 flex justify-between items-end">
+                    <div>
+                        <h3 class="text-xl font-black text-emerald-950">Yeni məhsul</h3>
+                        <div class="flex items-center text-xs text-emerald-700 font-bold mt-1">
+                            <i class="fas fa-leaf mr-1"></i> Təmiz mühit
+                        </div>
+                    </div>
+                </div>
+
+                <div id="products-grid" class="space-y-6">
+                    <!-- Məhsul kartı -->
+                    <div class="product-card bg-white rounded-[2rem] border border-gray-100 overflow-hidden shadow-md">
+                        <div class="relative h-60">
+                            <img src="potatos.PNG"
+     alt="Kartof (Lerik)" 
+     class="w-full h-full object-cover scale-40">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-xl font-bold text-gray-900 leading-tight">Kartof (Lerik)</h4>
+                                <span class="bg-amber-100 text-amber-900 text-[10px] font-black px-2 py-1 rounded-md">TƏBİİ</span>
+                            </div>
+                            <p class="text-gray-600 text-xs mb-5 leading-relaxed">Talış dağlarının münbit yamaclarında, tamamilə təbii və ənənəvi üsullarla yetişdirilib. Mükəmməl dada malikdir.</p>
+                            
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <span class="text-3xl font-black text-emerald-900">3.00 ₼</span>
+                                    <span class="text-sm font-bold text-gray-400 ml-1">/ kq</span>
+                                </div>
+                                
+                                <div class="flex items-center bg-gray-100 rounded-2xl p-1 border border-gray-200">
+                                    <button onclick="updateTempQty(-1)" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white transition text-emerald-900 font-black">-</button>
+                                    <span id="temp-qty" class="w-8 text-center font-black text-lg">1</span>
+                                    <button onclick="updateTempQty(1)" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white transition text-emerald-900 font-black">+</button>
+                                </div>
+                            </div>
+
+                            <button onclick="addToCart({id: 1, name: 'Kartof (Lerik)', price: 3.00})" 
+                                    class="w-full bg-emerald-800 hover:bg-emerald-900 text-white font-black py-4.5 rounded-2xl transition-all active:scale-95 flex items-center justify-center space-x-3 text-sm shadow-xl shadow-emerald-100">
+                                <i class="fas fa-cart-plus text-lg"></i>
+                                <span>Səbətə at</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Yenilənmiş "Tezliklə" bloku -->
+                    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-6 border border-emerald-100 text-center shadow-sm">
+                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm text-amber-600">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="text-sm font-black text-emerald-900 mb-1 uppercase tracking-tight">Gələcəkdə çeşidimizdə</h4>
+                        <p class="text-emerald-800/70 text-[11px] font-medium leading-relaxed">Süfrəniz üçün yeni təbii dadlar hazırlayırıq: təmiz dağ balı, kənd kərə yağı və bağlarımızdan mövsümi meyvələr.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Səbət modal pəncərəsi -->
+        <div id="cart-modal" onclick="if(event.target === this) toggleCart()">
+            <div id="cart-content" onclick="event.stopPropagation()">
+                <div class="p-6 border-b border-gray-50 flex justify-between items-center bg-white rounded-t-[2rem]">
+                    <h3 class="text-xl font-extrabold text-emerald-950 tracking-tight">Sifarişiniz</h3>
+                    <button onclick="toggleCart()" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4 bg-white" style="min-height: 120px;">
+                </div>
+
+                <div class="p-6 bg-gray-50 border-t border-gray-100">
+                    <div class="flex justify-between items-center mb-6 px-2">
+                        <span class="text-gray-500 font-bold uppercase text-[11px] tracking-widest">Cəmi:</span>
+                        <span id="cart-total" class="text-3xl font-black text-emerald-900">0.00 ₼</span>
+                    </div>
+                    
+                    <button onclick="checkout()" class="w-full bg-[#128C7E] hover:bg-[#075E54] text-white font-black py-5 rounded-2xl transition-all active:scale-[0.98] flex items-center justify-center space-x-3 shadow-2xl shadow-green-200">
+                        <i class="fab fa-whatsapp text-2xl"></i>
+                        <span class="text-lg">Çatdırılmanı rəsmiləşdir</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-emerald-950 text-white px-7 py-4 rounded-2xl text-xs font-black opacity-0 transition-all duration-300 shadow-2xl z-[2000] flex items-center space-x-3 pointer-events-none">
+            <i class="fas fa-check-circle text-amber-400 text-lg"></i>
+            <span class="uppercase tracking-wider">Əlavə edildi!</span>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+        let tempQty = 1;
+        const PHONE_NUMBER = "994776020060"; 
+
+        function updateTempQty(val) {
+            tempQty = Math.max(1, tempQty + val);
+            document.getElementById('temp-qty').innerText = tempQty;
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            const body = document.body;
+            
+            if (!modal.classList.contains('active')) {
+                renderCart();
+                modal.classList.add('active');
+                body.classList.add('no-scroll');
+            } else {
+                modal.classList.remove('active');
+                body.classList.remove('no-scroll');
+            }
+        }
+
+        function addToCart(product) {
+            const existing = cart.find(item => item.id === product.id);
+            if (existing) {
+                existing.qty += tempQty;
+            } else {
+                cart.push({ ...product, qty: tempQty });
+            }
+            tempQty = 1;
+            document.getElementById('temp-qty').innerText = "1";
+            updateCartUI();
+            showToast();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+            renderCart();
+        }
+
+        function updateCartUI() {
+            const count = cart.reduce((acc, item) => acc + item.qty, 0);
+            const badge = document.getElementById('cart-count');
+            if (count > 0) {
+                badge.innerText = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-total');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-200">
+                            <i class="fas fa-shopping-basket text-3xl"></i>
+                        </div>
+                        <p class="text-gray-400 font-bold uppercase text-[10px] tracking-[0.2em]">Səbət boşdur</p>
+                    </div>`;
+                totalEl.innerText = "0.00 ₼";
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = cart.map(item => {
+                const subtotal = item.price * item.qty;
+                total += subtotal;
+                return `
+                    <div class="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-100 shadow-sm transition hover:border-emerald-100">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-800">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-emerald-950 text-[14px]">${item.name}</h5>
+                                <p class="text-[10px] text-gray-400 font-black uppercase tracking-tighter">${item.qty} KQ × ${item.price.toFixed(2)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="font-black text-emerald-900 text-sm">${subtotal.toFixed(2)} ₼</span>
+                            <button onclick="removeFromCart(${item.id})" class="text-gray-300 hover:text-rose-600 transition p-1">
+                                <i class="fas fa-trash-alt text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            totalEl.innerText = `${total.toFixed(2)} ₼`;
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+        }
+
+        function checkout() {
+            if (cart.length === 0) return;
+            let message = "📦 *LankonLik YENİ SİFARİŞ*:%0A%0A";
+            let total = 0;
+            cart.forEach(item => {
+                const subtotal = item.price * item.qty;
+                message += `• *${item.name}*: ${item.qty} kq — ${subtotal.toFixed(2)} ₼%0A`;
+                total += subtotal;
+            });
+            message += `%0A💰 *CƏMİ ÖDƏNİŞ: ${total.toFixed(2)} ₼*%0A%0ASifarişimi təsdiqləməyinizi xahiş edirəm.`;
+            const whatsappUrl = `https://wa.me/${PHONE_NUMBER}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
